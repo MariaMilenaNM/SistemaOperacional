@@ -5,12 +5,17 @@ public class Processos implements Runnable {
 	private String entrada;
 	private static int idThread = 0;
 	private String[] operacoes; 
-	// pelo que entendi do diagrama vai vir de uma classe separada da main
+	// pelo que entendi do diagrama, virá de uma classe separada da main
 	
-	private GerenciamentoMemoria gerenciador;
-	// pelo diagrama não entendi bem como ele chega aqui mas acho que pela main
-	// que tambem deve definir o tamanho da memoria, ou talvez seja o retorno 
-	// de uma função e o atributo é estatico
+	private static GerenciamentoMemoria gerenciador;
+	
+	
+	public Processos(GerenciamentoMemoria gerenciador) {
+		this.entrada = entrada;
+		this.idThread = idThread;
+		idThread++;
+		this.operacoes = entrada.split(",");
+	}
 	
 	@Override
 	public void run() {
@@ -41,15 +46,6 @@ public class Processos implements Runnable {
 			}
 		}
 		
-	}
-	
-	public Processos(GerenciamentoMemoria gerenciador) {
-		this.entrada = entrada;
-		this.idThread = idThread;
-		idThread++;
-		this.operacoes = entrada.split(",");
-		
-		this.gerenciador = gerenciador;
 	}
 	
 	// precisam de um idex da memoria e um valor para receber/enviar
