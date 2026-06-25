@@ -1,5 +1,5 @@
 package br.upe;
-/*
+
 //concluir aqui a lógica e afins quando visualizar a classe memoria virtual e algoritmo LRU
 
 public class GerenciaMemoria {
@@ -62,4 +62,4 @@ public class GerenciaMemoria {
         virtual.metodo;//metodoParaSetarModificada(enderecoVirtual, 0);
     }
 }
-*/
+

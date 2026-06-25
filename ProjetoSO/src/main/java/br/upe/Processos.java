@@ -7,10 +7,10 @@ public class Processos implements Runnable {
 	private String[] operacoes; 
 	// pelo que entendi do diagrama, virá de uma classe separada da main
 	
-	private static GerenciamentoMemoria gerenciador;
+	private static GerenciaMemoria gerenciador;
 	
 	
-	public Processos(GerenciamentoMemoria gerenciador) {
+	public Processos(GerenciaMemoria gerenciador) {
 		this.entrada = entrada;
 		this.idThread = idThread;
 		idThread++;
