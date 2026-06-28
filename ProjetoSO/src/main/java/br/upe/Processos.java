@@ -47,7 +47,7 @@ public class Processos implements Runnable {
 	
 	public void Leitura(int index) {
 		// Estou assumindo que o gerenciador retorna o valor lido.
-		valor = gerenciador.acessarEndereco(index, 'r');
+		int valor = gerenciador.acessarEndereco(index, 'r', -1);
 		System.out.println("Processo" + idThread + ": Leu " + valor + ": do index" + index + ".'");
 	}
 }
