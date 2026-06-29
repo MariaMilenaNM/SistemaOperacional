@@ -2,52 +2,56 @@ package br.upe;
 
 public class Processos implements Runnable {
 	
-	private String[] operacoes; // Todas as operações separadamente.
+	private String[] operacoes; // Todas as operações "separadamente".
 	private static int contadorId = 0;
 	private int idThread; // id individual do processo.
-	private static GerenciaMemoria gerenciador;
+	private GerenciaMemoria gerenciador = new GerenciaMemoria();
 	
-	public Processos(String entrada) {
+	public Processos(GerenciaMemoria gerenciador, String entrada) {
+		this.gerenciador = gerenciador;
 		this.idThread = contadorId++;
-		this.operacoes = entrada.split(","); 
-		// Primeira divisão: operações juntas para individuais.
+		this.operacoes = entrada.split(","); // Divide a string de entrada em operações individuais.
 	}
 	
 	@Override
 	public void run() {
-		System.out.println("processo" + idThread + "iniciado com sucesso. :)");
-		
+		System.out.println("processo " + idThread + ", iniciado com sucesso. :)");
 		try {
 			//Loop para passar pelo array de operações.
-			for(String cadaOperacao: operacoes) {
-				executarA(cadaOperacao);
+			for(String operacaoDaVez: operacoes) {
+				executarOperacao(operacaoDaVez);
 			}
+			System.out.println("processo " + idThread + ", finalizado com sucesso. :D");
 		} catch (Exception e) {
-			System.err.println("Erro no processo numero " + idThread);
+			System.err.println("Erro no processo numero " + idThread + ". :(");
+			e.printStackTrace();
 		}
 	}
 		
-	private void executarA(String operacaoDaVez) {
+	private void executarOperacao(String operacaoDaVez) {
 		// um if separa leitura e escrita e chama a função adequada.
 		if (operacaoDaVez.contains("-W-")) {
 			String[] argumentos = operacaoDaVez.split("-W-");
 			int index = Integer.parseInt(argumentos[0]);
 			int valor = Integer.parseInt(argumentos[1]);
-			Escrita(index, valor);
+			escrita(index, valor);
 		} else if (operacaoDaVez.contains("-R")) {
-			int index = Integer.parseInt(operacaoDaVez);
-			Leitura(index);
+			String argumento = operacaoDaVez.replace("-R", "");
+			int index = Integer.parseInt(argumento);
+			leitura(index);
+		} else {
+			System.out.println("Operação indefinida: " + operacaoDaVez + ", no processo: " + idThread + ". :O");
 		}
 	}
 	
-	public void Escrita(int index, int valor) {
+	public void escrita(int index, int valor) {
 		gerenciador.acessarEndereco(index, 'w', valor);
-		System.out.println("Processo" + idThread + ": Escreveu " + valor + ": em index" + index + ".'");
+		System.out.println("Processo" + idThread + ": Escreveu " + valor + ", em index" + index + ".");
 	}
 	
-	public void Leitura(int index) {
+	public void leitura(int index) {
 		// Estou assumindo que o gerenciador retorna o valor lido.
-		int valor = gerenciador.acessarEndereco(index, 'r', -1);
-		System.out.println("Processo" + idThread + ": Leu " + valor + ": do index" + index + ".'");
+		int valor = gerenciador.acessarEndereco(index, 'r', 0);
+		System.out.println("Processo" + idThread + ": Leu " + valor + ", do index" + index + ".");
 	}
 }
