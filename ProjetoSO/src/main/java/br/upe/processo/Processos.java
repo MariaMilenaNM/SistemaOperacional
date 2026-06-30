@@ -1,12 +1,15 @@
-package br.upe;
+package br.upe.processo;
+
+import br.upe.gerenciador.IGerenciador;
 
 public class Processos implements Runnable {
 	
 	private String[] operacoes; // Todas as operações "separadamente".
 	private int idThread; // id individual do processo.
-	private IGerenciador gerenciador = new GerenciaMemoria();
+	private IGerenciador gerenciador;
+
 	
-	public Processos(int idThread, String entrada, GerenciaMemoria gerenciador) {
+	public Processos(int idThread, String entrada, IGerenciador gerenciador) {
 		this.idThread = idThread;
 		this.operacoes = entrada.split(","); // Divide a string de entrada em operações individuais.
 		this.gerenciador = gerenciador;

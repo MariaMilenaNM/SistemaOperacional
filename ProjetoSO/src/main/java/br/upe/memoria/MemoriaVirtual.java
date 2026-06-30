@@ -1,4 +1,4 @@
-package br.upe;
+package br.upe.memoria;
 
 //Cada posição é uma pagina com seus bits de controle.
 public class MemoriaVirtual {

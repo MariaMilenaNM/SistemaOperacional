@@ -1,4 +1,4 @@
-package br.upe;
+package br.upe.processo;
 import java.util.ArrayList;
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package br.upe;
+package br.upe.memoria;
 
 public class Pagina {
 

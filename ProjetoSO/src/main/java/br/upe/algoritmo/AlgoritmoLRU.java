@@ -1,7 +1,11 @@
-package br.upe;
+package br.upe.algoritmo;
+
 
 // a logica dele: cada página tem um contador de "tempo do último acesso"
 // a eliminada é a página com o menor contador
+
+import br.upe.memoria.MemoriaVirtual;
+import br.upe.memoria.Pagina;
 
 public class AlgoritmoLRU {
 

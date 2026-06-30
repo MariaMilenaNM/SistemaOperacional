@@ -1,6 +1,12 @@
-package br.upe;
+package br.upe.gerenciador;
 
 import java.util.concurrent.locks.ReentrantLock;
+
+import br.upe.algoritmo.AlgoritmoLRU;
+import br.upe.memoria.Hd;
+import br.upe.memoria.MemoriaFisica;
+import br.upe.memoria.MemoriaVirtual;
+import br.upe.memoria.Pagina;
 
 public class GerenciaMemoria implements IGerenciador {
 

@@ -1,4 +1,7 @@
 package br.upe;
+import br.upe.gerenciador.GerenciaMemoria;
+import br.upe.processo.FabricaDeEntradas;
+import br.upe.processo.Processos;
 
 public class Main {
 

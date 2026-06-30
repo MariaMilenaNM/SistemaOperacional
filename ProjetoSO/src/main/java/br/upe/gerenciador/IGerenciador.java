@@ -1,4 +1,4 @@
-package br.upe;
+package br.upe.gerenciador;
 
 // Interface que define o contrato de acesso à memória.
 // Processos só enxerga essa interface e a

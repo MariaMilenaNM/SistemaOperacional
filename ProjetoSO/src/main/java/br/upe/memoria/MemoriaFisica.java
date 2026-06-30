@@ -1,4 +1,4 @@
-package br.upe;
+package br.upe.memoria;
 
 import java.util.Arrays;
 
