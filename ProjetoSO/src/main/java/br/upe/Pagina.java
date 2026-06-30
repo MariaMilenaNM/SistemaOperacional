@@ -24,24 +24,18 @@ public class Pagina {
     public void carregar(int moldura) {
         this.presente     = true;
         this.referenciado = true;
-        this.modificado   = false;
+        this.modificado   = false; //porque a cópia na RAM acabou de vir do disco (as duas cópias são idênticas nesse momento)
         this.moldura      = moldura;
     }
 
-    //Expulsa a página da memória física
-    // modificado nao reseta, GerenciaMemoria precisa checar esse bit antes de chamar expulsar()
+    // modificado não é zerado aqui pq o GerenciaMemoria precisa ler esse bit antes de chamar
+    //referenciado também não é zerado vai ser escrito no próximo carregar()
     public void expulsar() {
         this.presente = false;
         this.moldura  = -1;
     }
 
-    // Zera bit referenciado (relogio do algoritmo
-    public void resetReferenciado() {
-        this.referenciado = false;
-    }
-
-    // getters 
-
+    // getters
     public boolean isPresente()     {
         return presente; }
     public boolean isReferenciado() {

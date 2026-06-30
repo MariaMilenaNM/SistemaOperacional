@@ -1,7 +1,7 @@
 package br.upe;
 
-// a logica dele: cada página tem um contador de "tempo do último acesso" 
-//a eliminada é a página com o menor contador entre as presentes.
+// a logica dele: cada página tem um contador de "tempo do último acesso"
+// a eliminada é a página com o menor contador
 
 public class AlgoritmoLRU {
 
@@ -11,6 +11,7 @@ public class AlgoritmoLRU {
     // último tempo de acesso por página (indexado pelo endereço virtual)
     private int[] ultimoAcesso;
 
+    // tamanhoMemVirtual deve ser igual ao TAM_VIRTUAL do GerenciaMemoria
     public AlgoritmoLRU(int tamanhoMemVirtual) {
         this.relogio      = 0;
         this.ultimoAcesso = new int[tamanhoMemVirtual];
@@ -22,10 +23,11 @@ public class AlgoritmoLRU {
         ultimoAcesso[endereco] = ++relogio;
     }
 
-    //Escolhe a página que vai sair para ser substituída, consulta a MemoriaVirtual para saber quais páginas estão presentes
-    //depois disso retorna o endereço virtual da que foi usada há mais tempo
+    // Escolhe a página que vai sair para ser substituída, consulta a MemoriaVirtual para saber quais páginas estão presentes
+    // depois disso retorna o endereço virtual da que foi usada há mais tempo
+    // recebe memVirtual como parâmetro
     public int paginaParaRemover(MemoriaVirtual memVirtual) {
-        int vitima    = -1;
+        int vitima     = -1;
         int menorTempo = Integer.MAX_VALUE;
 
         for (int i = 0; i < memVirtual.getTamanho(); i++) {

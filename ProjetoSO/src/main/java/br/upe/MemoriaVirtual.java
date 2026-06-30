@@ -1,10 +1,10 @@
 package br.upe;
 
-//Cada posição é uma Pagina com seus bits de controle.
+//Cada posição é uma pagina com seus bits de controle.
 public class MemoriaVirtual {
 
     private Pagina[] paginas;
-    private int      tamanho; //2x a fisica
+    private int      tamanho; //2x a fisica como jorge pediu
 
     public MemoriaVirtual(int tamanho) {
         this.tamanho = tamanho;
@@ -15,16 +15,9 @@ public class MemoriaVirtual {
     }
 
     //Retorna a página em um endereço virtual
+    //Por exemplo, se a thread acessa o endereço 7 getPagina(7) retorna a ficha da página 7 e o GerenciaMemoria checa pagina.isPresente().
     public Pagina getPagina(int endereco) {
         return paginas[endereco];
-    }
-
-    //Zera o bit referenciado de todas as páginas presentes
-    //precisa ser chamado (relogio) pelo GerenciaMemoria
-    public void reiniciaRef() {
-        for (Pagina p : paginas) {
-            if (p.isPresente()) p.resetReferenciado();
-        }
     }
 
     public int getTamanho() { return tamanho; }

@@ -2,60 +2,51 @@ package br.upe;
 
 public class Processos implements Runnable {
 
-	private String entrada;
-	private static int idThread = 0;
-	private String[] operacoes; 
-	// pelo que entendi do diagrama, virá de uma classe separada da main
-	
-	private static GerenciaMemoria gerenciador;
-	
-	
-	public Processos(GerenciaMemoria gerenciador) {
-		this.entrada = entrada;
-		this.idThread = idThread;
-		idThread++;
-		this.operacoes = entrada.split(",");
+	private int          idThread;
+	private String[]     operacoes;
+	private IGerenciador gerenciador;
+
+	public Processos(int idThread, String entrada, IGerenciador gerenciador) {
+		this.idThread    = idThread;
+		this.operacoes   = entrada.split(",");
+		this.gerenciador = gerenciador;
 	}
-	
+
 	@Override
 	public void run() {
-		System.out.println("processo" + idThread + "iniciado com sucesso. :)");
-		
-		//Loop para passar pelo array de operações.
-		for(String cadaOperacao: operacoes) {
+		System.out.println("Processo " + idThread + " iniciado.");
+
+		for (String cadaOperacao : operacoes) {
 			try {
-				// .slip-operacoes para inicializar as variaveis.
-				// estou supondo que elas vem na forma "operação-endereço-valor"
-				// e separados por virgula.
-				String[] corte = cadaOperacao.split(",");
-				char operacao = corte[0].charAt(0);
-				// essa linha acima ainda me deixa confuso.
-				int index = Integer.parseInt(corte[1]);
-				int valor = Integer.parseInt(corte[2]);
-				
-				// um if para separar as operações.
-				if (operacao == 'L') {
-					Leitura(index, valor);
-				} else if (operacao == 'E') {
-					Escrita(index, valor);
+				// formato da FabricaDeEntradas: "endereco-R" ou "endereco-W-valor"
+				String[] partes = cadaOperacao.trim().split("-");
+				int  endereco   = Integer.parseInt(partes[0]);
+				char operacao   = partes[1].charAt(0); // 'R' ou 'W'
+
+				if (operacao == 'R') {
+					Leitura(endereco);
+				} else if (operacao == 'W') {
+					int valor = Integer.parseInt(partes[2]);
+					Escrita(endereco, valor);
 				}
-				
-				
+
 			} catch (Exception e) {
-				System.err.println("Erro no processo numero " + idThread);
+				System.err.println("Erro no processo " + idThread
+						+ " op=[" + cadaOperacao + "]: " + e.getMessage());
 			}
 		}
-		
+
+		System.out.println("Processo " + idThread + " finalizado.");
 	}
-	
-	// precisam de um idex da memoria e um valor para receber/enviar
-	public void Escrita(int index, int valor) {
-		gerenciador.acessarEndereco(index, 'E', valor);
-		System.out.println("Processo" + idThread + ": Escreveu " + valor + ": em index" + index + ".'");
+
+	public void Leitura(int endereco) {
+		System.out.println("[Thread " + idThread + "] Leitura end=" + endereco);
+		gerenciador.read(endereco);
 	}
-	
-	public void Leitura(int index, int valor) {
-		gerenciador.acessarEndereco(index, 'L', valor);
-		System.out.println("Processo" + idThread + ": Leu " + valor + ": do index" + index + ".'");
+
+	public void Escrita(int endereco, int valor) {
+		System.out.println("[Thread " + idThread + "] Escrita end=" + endereco
+				+ " val=" + valor);
+		gerenciador.write(endereco, valor);
 	}
 }

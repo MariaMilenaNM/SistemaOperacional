@@ -1,65 +1,102 @@
 package br.upe;
 
-//concluir aqui a lógica e afins quando visualizar a classe memoria virtual e algoritmo LRU
+import java.util.concurrent.locks.ReentrantLock;
 
-public class GerenciaMemoria {
-    public int tamanhoMemoria = 10;
-    MemoriaFisica fisica = new MemoriaFisica(tamanhoMemoria);
-    MemoriaVirtual virtual = new MemoriaVirtual(2*tamanhoMemoria);
-    Hd hd = new Hd(5*tamanhoMemoria);
-    AlgoritmoLRU algoritmo = new AlgoritmoLRU();
+public class GerenciaMemoria implements IGerenciador {
 
-    //recebe endereco da memoria virtual, operacao leitura/escrita (r/w) e o valor
-    public int acessarEndereco (int enderecoVirtual, char operacao, int valor){
-        //consultarPaginas
-        // se ausente, ocorre falta de pagina e chama tratarFaltaPagina
-        if(!virtual.(enderecoVirtual)){ //metodo para dizer se a pagina está na memoria
-            System.out.println("Falta de pagina em " + enderecoVirtual);
-            tratarFaltaPagina(enderecoVirtual);
-        }
-        //Pagina na RAM? sim: referencia = 1
-        int frameDestino = virtual.//GetParaFrame(enderecoVirtual);
-        virtual.//metodopParaSetarReferenciada(enderecoVirtual, 1);
-        // se leitura: retorna o valor
-        if (operacao == 'r'){
-            System.out.println("Valor: " + fisica.memoriaFisica[frameDestino]);
-        }
-        // se escrita: atualiza e modificada = 1
-        else if (operacao == 'w'){
-            fisica.memoriaFisica[frameDestino] = valor;
-            virtual.//setModificada(enderecoVirtual, 1);
-            System.out.println("Escrita do valor " + valor);
-        }
-        return -1;
+    // TAM_VIRTUAL precisa estar entre 10 e 40
+    // porque a FabricaDeEntradas exige esse range
+    public static final int TAM_FISICA  = 5;   // X
+    public static final int TAM_VIRTUAL = 10;  // 2X
+
+    private MemoriaFisica  fisica;
+    private MemoriaVirtual virtual;
+    private Hd             hd;
+    private AlgoritmoLRU   algoritmo;
+
+    private final ReentrantLock lock = new ReentrantLock();
+
+    public GerenciaMemoria() {
+        this.fisica    = new MemoriaFisica(TAM_FISICA);
+        this.virtual   = new MemoriaVirtual(TAM_VIRTUAL);
+        this.hd        = new Hd(TAM_VIRTUAL);
+        this.algoritmo = new AlgoritmoLRU(TAM_VIRTUAL);
     }
 
-    public void tratarFaltaPagina(int enderecoVirtual){
-        //na física: tem moldura vazia?
+    @Override
+    public void read(int endereco) {
+        lock.lock();
+        try {
+            Pagina pagina = virtual.getPagina(endereco);
+
+            if (!pagina.isPresente()) {
+                System.out.println("  >> FALTA DE PAGINA (read) end=" + endereco);
+                tratarFaltaPagina(endereco);
+            }
+
+            int moldura = virtual.getPagina(endereco).getMoldura();
+            System.out.println("  >> Leitura end=" + endereco
+                    + " valor=" + fisica.memoriaFisica[moldura]);
+
+            pagina.registrarAcesso(false);
+            algoritmo.registrarAcesso(endereco);
+
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void write(int endereco, int valor) {
+        lock.lock();
+        try {
+            Pagina pagina = virtual.getPagina(endereco);
+
+            if (!pagina.isPresente()) {
+                System.out.println("  >> FALTA DE PAGINA (write) end=" + endereco);
+                tratarFaltaPagina(endereco);
+            }
+
+            int moldura = virtual.getPagina(endereco).getMoldura();
+            fisica.memoriaFisica[moldura] = valor;
+            System.out.println("  >> Escrita end=" + endereco + " valor=" + valor);
+
+            pagina.registrarAcesso(true);
+            algoritmo.registrarAcesso(endereco);
+
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void tratarFaltaPagina(int endereco) {
         int frameLivre = fisica.procuraFrameLivre();
 
-        //se nao tem vazia
-        if(frameLivre == -1) {
-            //Para isso eu ainda preciso ver como ficarão as classes de mem virtual e lru
-            int paginaPRemover = algoritmo.paginaParaRemover(); //vai chamar um metodo do algoritmo aqui
-            frameLivre = virtual//metodoprapegaroframe(paginaPRemover); // e aqui vai mostrar qual moldura vai ser sobrescrita
+        if (frameLivre == -1) {
+            int endVitima  = algoritmo.paginaParaRemover(virtual);
+            Pagina vitima  = virtual.getPagina(endVitima);
+            frameLivre     = vitima.getMoldura();
 
-            if (virtual.metodo//aqui preciso de um metodo para modificação)
-            {
-                int valorModificado = fisica.memoriaFisica[frameLivre];
-                hd.escreverDado(paginaPRemover, valorModificado); // SWAP OUT
+            if (vitima.isModificado()) {
+                int valorAtual = fisica.memoriaFisica[frameLivre];
+                hd.escreverDado(endVitima, valorAtual);
+                System.out.println("     SWAP OUT: pagina " + endVitima + " salva no HD");
+            } else {
+                System.out.println("     pagina " + endVitima + " descartada (nao modificada)");
             }
-            virtual.//metodopParaSetarPresente(paginaPRemover, 0);
-            virtual.//metodopParaSetarModificada(paginaPRemover, 0);
+
+            vitima.expulsar();
+            fisica.removePagina(frameLivre);
         }
-        //ler pag no hd: hd.lerDado
-        int valorDoHd = hd.lerDado(enderecoVirtual);
-        //carrega para a física
-        fisica.carregaPagina(frameLivre, valorDoHd);
 
-        //atualiza tabela de paginas
-        virtual.metodo;//metodoParaSetarFrame(enderecoVirtual, frameLivre);
-        virtual.metodo;//metodopParaSetarPresente(enderecoVirtual, 1);
-        virtual.metodo;//metodoParaSetarModificada(enderecoVirtual, 0);
+        int valorDoHd = hd.lerDado(endereco);
+        fisica.carregaPagina(valorDoHd, frameLivre);
+        virtual.getPagina(endereco).carregar(frameLivre);
+
+        System.out.println("     SWAP IN: pagina " + endereco
+                + " carregada do HD na moldura " + frameLivre);
     }
-}
 
+    public MemoriaFisica  getFisica()  { return fisica; }
+    public MemoriaVirtual getVirtual() { return virtual; }
+}
