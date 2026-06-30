@@ -3,14 +3,13 @@ package br.upe;
 public class Processos implements Runnable {
 	
 	private String[] operacoes; // Todas as operações "separadamente".
-	private static int contadorId = 0;
 	private int idThread; // id individual do processo.
-	private GerenciaMemoria gerenciador = new GerenciaMemoria();
+	private IGerenciador gerenciador = new GerenciaMemoria();
 	
-	public Processos(GerenciaMemoria gerenciador, String entrada) {
-		this.gerenciador = gerenciador;
-		this.idThread = contadorId++;
+	public Processos(int idThread, String entrada, GerenciaMemoria gerenciador) {
+		this.idThread = idThread;
 		this.operacoes = entrada.split(","); // Divide a string de entrada em operações individuais.
+		this.gerenciador = gerenciador;
 	}
 	
 	@Override
@@ -30,28 +29,26 @@ public class Processos implements Runnable {
 		
 	private void executarOperacao(String operacaoDaVez) {
 		// um if separa leitura e escrita e chama a função adequada.
-		if (operacaoDaVez.contains("-W-")) {
-			String[] argumentos = operacaoDaVez.split("-W-");
-			int index = Integer.parseInt(argumentos[0]);
-			int valor = Integer.parseInt(argumentos[1]);
-			escrita(index, valor);
-		} else if (operacaoDaVez.contains("-R")) {
-			String argumento = operacaoDaVez.replace("-R", "");
-			int index = Integer.parseInt(argumento);
-			leitura(index);
-		} else {
-			System.out.println("Operação indefinida: " + operacaoDaVez + ", no processo: " + idThread + ". :O");
+		String[] partes = operacaoDaVez.trim().split("-");
+		int  endereco   = Integer.parseInt(partes[0]);
+		char operacao   = partes[1].charAt(0); // 'R' ou 'W'
+
+		if (operacao == 'R') {
+			leitura(endereco);
+		} else if (operacao == 'W') {
+			int valor = Integer.parseInt(partes[2]);
+			escrita(endereco, valor);
 		}
 	}
 	
-	public void escrita(int index, int valor) {
-		gerenciador.acessarEndereco(index, 'w', valor);
-		System.out.println("Processo" + idThread + ": Escreveu " + valor + ", em index" + index + ".");
+	public void escrita(int endereco, int valor) {
+		System.out.println("Processo" + idThread + ": Escreveu " + valor + ", em index" + endereco + ".");
+		gerenciador.write(endereco, valor);
 	}
 	
-	public void leitura(int index) {
+	public void leitura(int endereco) {
 		// Estou assumindo que o gerenciador retorna o valor lido.
-		int valor = gerenciador.acessarEndereco(index, 'r', 0);
-		System.out.println("Processo" + idThread + ": Leu " + valor + ", do index" + index + ".");
+		System.out.println("Processo " + idThread + ": Leu do index" + endereco);
+		gerenciador.read(endereco);
 	}
 }
