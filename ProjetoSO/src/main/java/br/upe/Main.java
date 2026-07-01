@@ -10,8 +10,12 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 
+        Simulador simulador = new Simulador();
+        simulador.inicio();
+
         // gerenciador compartilhado entre todas as threads
         GerenciaMemoria gerenciador = new GerenciaMemoria();
+        simulador.memoriaCarregada();
 
         // FabricaDeEntradas gera sequências aleatórias de operações
         // TAM_VIRTUAL precisa estar entre 10 e 40
@@ -33,5 +37,7 @@ public class Main {
         System.out.println("\n── Estado final ──────────────────────────");
         gerenciador.getFisica().consultaConteudo();
         System.out.println(gerenciador.getVirtual());
+
+        simulador.desliga();
     }
 }
