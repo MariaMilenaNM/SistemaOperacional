@@ -9,22 +9,24 @@ import br.upe.memoria.Pagina;
 
 public class AlgoritmoLRU {
 
-    // contador global de acessos que vai incrementado a cada acesso
-    private int relogio;
+    // Relogio como thread separada
+    private RelogioThread relogio;
 
     // último tempo de acesso por página (indexado pelo endereço virtual)
     private int[] ultimoAcesso;
 
     // tamanhoMemVirtual deve ser igual ao TAM_VIRTUAL do GerenciaMemoria
     public AlgoritmoLRU(int tamanhoMemVirtual) {
-        this.relogio      = 0;
         this.ultimoAcesso = new int[tamanhoMemVirtual];
+        this.relogio = new RelogioThread(0);
+        this.relogio.start(); //inicia thread
     }
 
     // Marca um acesso à página no endereço informado
     // ele deve ser chamado pelo GerenciaMemoria após cada leitura ou escrita
     public void registrarAcesso(int endereco) {
-        ultimoAcesso[endereco] = ++relogio;
+        //chama o incremento da thread
+        ultimoAcesso[endereco] = relogio.valorAtualContador();
     }
 
     // Escolhe a página que vai sair para ser substituída, consulta a MemoriaVirtual para saber quais páginas estão presentes
@@ -44,4 +46,9 @@ public class AlgoritmoLRU {
 
         return vitima;
     }
+
+    public void encerrar() {
+        relogio.desligaRelogio();
+    }
+
 }

@@ -105,4 +105,8 @@ public class GerenciaMemoria implements IGerenciador {
 
     public MemoriaFisica  getFisica()  { return fisica; }
     public MemoriaVirtual getVirtual() { return virtual; }
+
+    public void encerrar() {
+        algoritmo.encerrar();
+    }
 }

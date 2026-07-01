@@ -38,6 +38,7 @@ public class Main {
         gerenciador.getFisica().consultaConteudo();
         System.out.println(gerenciador.getVirtual());
 
+        gerenciador.encerrar();
         simulador.desliga();
     }
 }
