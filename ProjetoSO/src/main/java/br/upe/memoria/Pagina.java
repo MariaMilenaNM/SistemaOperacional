@@ -38,17 +38,14 @@ public class Pagina {
     // getters
     public boolean isPresente()     {
         return presente; }
-    public boolean isReferenciado() {
-        return referenciado; }
     public boolean isModificado()   {
         return modificado; }
     public int     getMoldura()     {
         return moldura; }
 
     //com o formato que mostra no slide para os bits
-    @Override
-    public String toString() {
-        return String.format("[P=%b R=%b M=%b moldura=%d]",
-                presente, referenciado, modificado, moldura);
+    public void exibir() {
+        System.out.println("[P=" + presente + " R=" + referenciado +
+                " M=" + modificado + " moldura=" + moldura + "]");
     }
 }

@@ -36,7 +36,7 @@ public class Main {
         // estado final
         System.out.println("\n── Estado final ──────────────────────────");
         gerenciador.getFisica().consultaConteudo();
-        System.out.println(gerenciador.getVirtual());
+        gerenciador.getVirtual().exibir(); // chama explicitamente
 
         gerenciador.encerrar();
         simulador.desliga();
