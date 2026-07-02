@@ -15,12 +15,13 @@ public class MemoriaVirtual {
     }
 
     //Retorna a página em um endereço virtual
-    //Por exemplo, se a thread acessa o endereço 7 getPagina(7) retorna a ficha da página 7 e o GerenciaMemoria checa pagina.isPresente().
+    //exemplo se a thread acessa o endereço 7 getPagina(7) retorna a ficha da página 7 e o GerenciaMemoria checa pagina.isPresente().
     public Pagina getPagina(int endereco) {
         return paginas[endereco];
     }
 
-    public int getTamanho() { return tamanho; }
+    public int getTamanho() {
+        return tamanho; }
 
     public void exibir() {
         System.out.println("MemVirtual:");

@@ -48,6 +48,5 @@ public class Pagina {
     //com o formato que mostra no slide para os bits
     public void exibir() {
         System.out.println("[P=" + presente + " R=" + referenciado + " M=" + modificado + " moldura=" + moldura + "]");
-
     }
 }
