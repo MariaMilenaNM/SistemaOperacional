@@ -1,4 +1,5 @@
 package br.upe;
+import br.upe.gerenciador.IGerenciador;
 import br.upe.gerenciador.GerenciaMemoria;
 import br.upe.processo.FabricaDeEntradas;
 import br.upe.processo.Processos;
@@ -7,19 +8,19 @@ public class Main {
 
     // o número de threads
     static final int NUM_THREADS = 2;
-
     public static void main(String[] args) throws InterruptedException {
 
         Simulador simulador = new Simulador();
         simulador.inicio();
 
         // gerenciador compartilhado entre todas as threads
-        GerenciaMemoria gerenciador = new GerenciaMemoria();
+        IGerenciador gerenciador = new GerenciaMemoria();
+
         simulador.memoriaCarregada();
 
         // FabricaDeEntradas gera sequências aleatórias de operações
         // TAM_VIRTUAL precisa estar entre 10 e 40
-        FabricaDeEntradas fabrica = new FabricaDeEntradas(GerenciaMemoria.TAM_VIRTUAL);
+        FabricaDeEntradas fabrica = new FabricaDeEntradas(gerenciador.TAM_VIRTUAL);
 
         // cria e dispara as threads
         Thread[] threads = new Thread[NUM_THREADS];
@@ -36,9 +37,8 @@ public class Main {
         // estado final
         System.out.println("\n── Estado final ──────────────────────────");
         gerenciador.getFisica().consultaConteudo();
-        System.out.println(gerenciador.getVirtual());
+        gerenciador.getVirtual().exibir();
 
-        gerenciador.encerrar();
         simulador.desliga();
     }
 }

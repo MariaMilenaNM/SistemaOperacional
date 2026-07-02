@@ -1,6 +1,4 @@
 package br.upe.algoritmo;
-
-
 // a logica dele: cada página tem um contador de "tempo do último acesso"
 // a eliminada é a página com o menor contador
 
@@ -9,46 +7,41 @@ import br.upe.memoria.Pagina;
 
 public class AlgoritmoLRU {
 
-    // Relogio como thread separada
-    private RelogioThread relogio;
-
+    private int relogio;
     // último tempo de acesso por página (indexado pelo endereço virtual)
     private int[] ultimoAcesso;
 
     // tamanhoMemVirtual deve ser igual ao TAM_VIRTUAL do GerenciaMemoria
     public AlgoritmoLRU(int tamanhoMemVirtual) {
         this.ultimoAcesso = new int[tamanhoMemVirtual];
-        this.relogio = new RelogioThread(0);
-        this.relogio.start(); //inicia thread
+        this.relogio = 0;
     }
+
+
 
     // Marca um acesso à página no endereço informado
     // ele deve ser chamado pelo GerenciaMemoria após cada leitura ou escrita
     public void registrarAcesso(int endereco) {
         //chama o incremento da thread
-        ultimoAcesso[endereco] = relogio.valorAtualContador();
+        ultimoAcesso[endereco] = relogio++;
     }
 
     // Escolhe a página que vai sair para ser substituída, consulta a MemoriaVirtual para saber quais páginas estão presentes
     // depois disso retorna o endereço virtual da que foi usada há mais tempo
     // recebe memVirtual como parâmetro
     public int paginaParaRemover(MemoriaVirtual memVirtual) {
-        int vitima     = -1;
+        int vitima = -1;
         int menorTempo = Integer.MAX_VALUE;
 
         for (int i = 0; i < memVirtual.getTamanho(); i++) {
             Pagina p = memVirtual.getPagina(i);
             if (p.isPresente() && ultimoAcesso[i] < menorTempo) {
                 menorTempo = ultimoAcesso[i];
-                vitima     = i;
+                vitima = i;
             }
         }
 
         return vitima;
-    }
-
-    public void encerrar() {
-        relogio.desligaRelogio();
     }
 
 }

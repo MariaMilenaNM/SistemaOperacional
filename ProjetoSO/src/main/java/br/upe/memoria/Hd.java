@@ -1,7 +1,5 @@
 package br.upe.memoria;
 
-import java.util.Arrays;
-
 //swap
 public class Hd {
     //estrutura pra armazenar os dados
@@ -27,8 +25,10 @@ public class Hd {
         dadosDisco[endereco] = valor;
     }
 
+    /*
     public void exibir(){
         //estrutura da exibicao: pagina x -> valor que tem na pagina
         System.out.println("hd" + Arrays.toString(dadosDisco));
     }
+     */
 }

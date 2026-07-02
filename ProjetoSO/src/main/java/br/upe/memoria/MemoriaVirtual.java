@@ -22,13 +22,12 @@ public class MemoriaVirtual {
 
     public int getTamanho() { return tamanho; }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("MemVirtual:\n");
+    public void exibir() {
+        System.out.println("MemVirtual:");
         for (int i = 0; i < tamanho; i++) {
-            sb.append("  [").append(i).append("] ").append(paginas[i]).append("\n");
+            System.out.print("  [" + i + "] ");
+            paginas[i].exibir(); // chama explicitamente
         }
-        return sb.toString();
     }
 }
 

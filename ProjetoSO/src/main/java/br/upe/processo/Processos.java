@@ -32,8 +32,8 @@ public class Processos implements Runnable {
 		
 	private void executarOperacao(String operacaoDaVez) {
 		// um if separa leitura e escrita e chama a função adequada.
-		String[] partes = operacaoDaVez.trim().split("-");
-		int  endereco   = Integer.parseInt(partes[0]);
+		String[] partes = operacaoDaVez.trim().split("-"); //quebra string
+		int  endereco   = Integer.parseInt(partes[0]); //endereco de string para int
 		char operacao   = partes[1].charAt(0); // 'R' ou 'W'
 
 		if (operacao == 'R') {
@@ -45,13 +45,13 @@ public class Processos implements Runnable {
 	}
 	
 	public void escrita(int endereco, int valor) {
-		System.out.println("Processo" + idThread + ": Escreveu " + valor + ", em index" + endereco + ".");
 		gerenciador.write(endereco, valor);
+		System.out.println("Processo" + idThread + ": Escreveu " + valor + ", em index" + endereco + ".");
 	}
 	
 	public void leitura(int endereco) {
 		// Estou assumindo que o gerenciador retorna o valor lido.
-		System.out.println("Processo " + idThread + ": Leu do index" + endereco);
 		gerenciador.read(endereco);
+		System.out.println("Processo " + idThread + ": Leu do index" + endereco);
 	}
 }
