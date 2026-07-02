@@ -30,18 +30,18 @@ public class AlgoritmoLRU {
     // depois disso retorna o endereço virtual da que foi usada há mais tempo
     // recebe memVirtual como parâmetro
     public int paginaParaRemover(MemoriaVirtual memVirtual) {
-        int vitima = -1;
+        int expulso = -1;
         int menorTempo = Integer.MAX_VALUE;
 
         for (int i = 0; i < memVirtual.getTamanho(); i++) {
             Pagina p = memVirtual.getPagina(i);
             if (p.isPresente() && ultimoAcesso[i] < menorTempo) {
                 menorTempo = ultimoAcesso[i];
-                vitima = i;
+                expulso = i;
             }
         }
 
-        return vitima;
+        return expulso;
     }
 
 }

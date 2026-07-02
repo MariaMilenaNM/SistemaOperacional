@@ -34,6 +34,8 @@ public class GerenciaMemoria implements IGerenciador {
             if (!pagina.isPresente()) {
                 System.out.println("  >> FALTA DE PAGINA (read) end=" + endereco);
                 tratarFaltaPagina(endereco);
+            } else {
+                System.out.println(" >> NAO HOUVE FALTA DE PAGINA (read)");
             }
 
             //busca de novo a pagina, pega seu frame,
@@ -54,6 +56,8 @@ public class GerenciaMemoria implements IGerenciador {
             if (!pagina.isPresente()) {
                 System.out.println("  >> FALTA DE PAGINA (write) end=" + endereco);
                 tratarFaltaPagina(endereco);
+            } else{
+                System.out.println(" >> NAO HOUVE FALTA DE PÁGINA (write)");
             }
 
             int moldura = virtual.getPagina(endereco).getMoldura();
@@ -70,24 +74,24 @@ public class GerenciaMemoria implements IGerenciador {
         //se nao houver frame livre ou seja memoria fisica estiver cheia
         if (frameLivre == -1) {
             //chama o algoritmo para entender qual pagina deve ser removida
-            int endVitima  = algoritmo.paginaParaRemover(virtual);
-            //pega vitima e moldura
-            Pagina vitima  = virtual.getPagina(endVitima);
-            frameLivre     = vitima.getMoldura();
+            int endExpulso  = algoritmo.paginaParaRemover(virtual);
+            //pega expulso e moldura
+            Pagina expulso  = virtual.getPagina(endExpulso);
+            frameLivre     = expulso.getMoldura();
 
             //se vitima foi modificada
-            if (vitima.isModificado()) {
+            if (expulso.isModificado()) {
                 int valorAtual = fisica.memoriaFisica[frameLivre];
-                //ele vai pegar essa vitima e colocar no hd
-                hd.escreverDado(endVitima, valorAtual);
-                System.out.println("     SWAP OUT: pagina " + endVitima + " salva no HD");
+                //ele vai pegar essa expulso e colocar no hd
+                hd.escreverDado(endExpulso, valorAtual);
+                System.out.println("     SWAP OUT: pagina " + endExpulso + " salva no HD");
             } else {
                 //se nao modificada nao precisa reescrever no disco (hd
-                System.out.println("     pagina " + endVitima + " descartada (nao modificada)");
+                System.out.println("     pagina " + endExpulso + " descartada (nao modificada)");
             }
 
             //tira a pagina da tabela vitual
-            vitima.expulsar();
+            expulso.expulsar();
             //remove pagina da fisica
             fisica.removePagina(frameLivre);
         }
