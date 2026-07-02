@@ -27,7 +27,7 @@ public class MemoriaVirtual {
         System.out.println("MemVirtual:");
         for (int i = 0; i < tamanho; i++) {
             System.out.print("  [" + i + "] ");
-            paginas[i].exibir(); // chama explicitamente
+            paginas[i].exibir();
         }
     }
 }

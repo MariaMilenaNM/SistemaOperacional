@@ -8,7 +8,7 @@ public class Main {
 
     // o número de threads
     static final int NUM_THREADS = 2;
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         Simulador simulador = new Simulador();
         simulador.inicio();
@@ -32,13 +32,17 @@ public class Main {
 
         //startar
         for (Thread t : threads) t.start();
-        for (Thread t : threads) t.join();
+        try{
+            for (Thread t : threads) t.join();
+        }catch(Exception e){
+            System.out.println("join");
+        }
 
         // estado final
         System.out.println("\n── Estado final ──────────────────────────");
         gerenciador.getFisica().consultaConteudo();
 
-        gerenciador.getVirtual().exibir(); // chama explicitamente
+        gerenciador.getVirtual().exibir();
 
 
         simulador.desliga();
